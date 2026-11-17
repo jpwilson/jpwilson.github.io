@@ -314,25 +314,74 @@ B.forEach(b=>(function lay(n,ld){
     c.lt=d.map(x=>x*r);lay(c,ld+1)});
 })(b,1));
 
-// the top level is seven beads on a string, and the string is tied into a different shape each visit
-const NP=140,SHAPES=[
+// the top level is seven beads on a string, and the string is tied into a different shape each visit.
+// one point array holds all line work: 0..NP-1 the string, then 7 free bead anchors, then extra segments drawn in pairs
+const NP=140,EX=48,XB=NP+7,NT=XB+EX,DK=110/9e4,dome=(x,y,z=0)=>[x,y,z-(x*x+y*y)*DK];
+const arr=n=>Array.from({length:n},()=>[0,0,0,1]),str=arr(NT),strT=arr(NT),so=arr(NT),SP=arr(NT),set3=(o,p)=>{o[0]=p[0];o[1]=p[1];o[2]=p[2];return o};
+const PL=new Float64Array(64);
+// resample polyline v into strT[o..o+n-1]; snap puts every vertex on a sample so corners stay sharp
+function poly(v,cl,o,n,snap,vi){
+  const m=v.length+(cl?1:0),D=cl?n:n-1,P=k=>v[k%v.length];PL[0]=0;
+  for(let k=1;k<m;k++){const a=P(k-1),b=P(k);PL[k]=PL[k-1]+hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2])}
+  const T=PL[m-1]||1,I=k=>Math.round(PL[k]/T*D);let k=0;if(vi)for(let q=0;q<m;q++)vi[q]=I(q);
+  for(let j=0;j<n;j++){let f;
+    if(snap){while(k<m-2&&I(k+1)<=j)k++;const i0=I(k);f=min(1,(j-i0)/max(1,I(k+1)-i0))}
+    else{const d=j/D*T;while(k<m-2&&PL[k+1]<d)k++;f=min(1,(d-PL[k])/(PL[k+1]-PL[k]||1))}
+    const a=P(k),b=P(k+1),w=strT[o+j];for(let i=0;i<3;i++)w[i]=a[i]+(b[i]-a[i])*f}
+}
+// the snake game: a 12x12 board, a 24-cell body that glides one cell every 18 frames toward the food
+const SN={b:new Int16Array(24),nx:0,ph:0,food:0,over:0},SV=arr(25),CX=c=>(c%12-5.5)*42,CY=c=>(floor(c/12)-5.5)*42;
+const SK=DK*.45,svs=(o,x,y)=>{o[0]=x;o[1]=y;o[2]=-(x*x+y*y)*SK};
+const inBody=(c,n)=>{for(let k=0;k<n;k++)if(SN.b[k]===c)return true;return false};
+function snFood(){let c=0;for(let i=0;i<300;i++){c=floor(random()*144);if(!inBody(c,24))break}SN.food=c}
+function snMove(){const h=SN.b[0],x=h%12,y=floor(h/12);let best=-1,bs=1e9;
+  for(let d=0;d<4;d++){const nx=x+[1,0,-1,0][d],ny=y+[0,1,0,-1][d],c=ny*12+nx;if(nx<0||ny<0||nx>11||ny>11||inBody(c,23))continue;
+    const s=abs(nx-SN.food%12)+abs(ny-floor(SN.food/12))+random()*.5;if(s<bs){bs=s;best=c}}return best}
+function snBuild(){const b=SN.b,f=SN.nx>=0?SN.ph/18:0,h=SN.nx>=0?SN.nx:b[0];
+  svs(SV[0],CX(b[0])+(CX(h)-CX(b[0]))*f,CY(b[0])+(CY(h)-CY(b[0]))*f);for(let k=0;k<23;k++)svs(SV[k+1],CX(b[k]),CY(b[k]));
+  svs(SV[24],CX(b[23])+(CX(b[22])-CX(b[23]))*f,CY(b[23])+(CY(b[22])-CY(b[23]))*f);poly(SV,0,0,NP,0)}
+function snInit(){for(let k=0;k<24;k++)SN.b[k]=k<12?107-k:96+k;SN.ph=0;SN.over=0;snFood();SN.nx=snMove();snBuild()}
+function snTick(){
+  if(SN.over){if(--SN.over===0)snInit();return}
+  if(++SN.ph>=18){SN.ph=0;if(SN.nx<0){SN.over=72;return}
+    for(let k=23;k>0;k--)SN.b[k]=SN.b[k-1];SN.b[0]=SN.nx;
+    if(SN.nx===SN.food){const x=CX(SN.food),y=CY(SN.food);bursts.push({w:[x,y,-(x*x+y*y)*SK],t0:performance.now(),ink:1});snFood()}
+    SN.nx=snMove()}
+  snBuild()}
+const SHAPES=[
   {name:'knot',closed:1,f:u=>[(sin(u)+2*sin(2*u))*78,(cos(u)-2*cos(2*u))*78,-sin(3*u)*110]},
   {name:'eight',closed:1,f:u=>{const d=1+sin(u)*sin(u);return[cos(u)/d*300,sin(u)*cos(u)/d*300,sin(2*u+.6)*90]}},
   {name:'spring',closed:0,f:u=>{const w=u/(2*PI);return[cos(w*PI*5)*150,(w-.5)*440,sin(w*PI*5)*150]}},
   {name:'wave',closed:0,f:u=>{const w=u/(2*PI);return[(w-.5)*620,sin(w*PI*4)*120,cos(w*PI*4)*120]}},
   {name:'heart',closed:1,f:u=>[16*Math.pow(sin(u),3)*15,-(13*cos(u)-5*cos(2*u)-2*cos(3*u)-cos(4*u))*15-20,sin(2*u)*70]},
   {name:'clover',closed:1,f:u=>{const r=170+90*cos(3*u);return[r*cos(u),r*sin(u),sin(3*u)*80]}},
+  // a spider web: a straight-sided spiral on 8 spokes, inside an octagon frame
+  {name:'web',flat:1,mk(){const v=[],vi=[],sp=(a,r)=>dome(r*cos(a),r*sin(a));for(let k=0;k<=28;k++)v.push(sp(k*PI/4,32+238*k/28));
+    poly(v,0,0,NP,1,vi);this.ai=[6,9,12,15,18,21,24].map(k=>vi[k]);
+    let e=XB;for(let m=0;m<8;m++){const a=m*PI/4;for(const p of [sp(a,0),sp(a,150),sp(a,150),sp(a,295),sp(a,295),sp(a+PI/4,295)])set3(strT[e++],p)}}},
+  // a honeycomb: seven flat-top hexes, one bead proud of each cell
+  {name:'honey',closed:1,brk:20,flat:1,ai:[0,1,2,3,4,5,6].map(i=>NP+i),mk(){
+    for(let h=0;h<7;h++){const a=PI/6+PI/3*(h-1),d=h?95*sqrt(3):0,X=d*cos(a),Y=d*sin(a);
+      for(let j=0;j<20;j++){const q=j<19?j:0,s=floor(q/3),f=q%3/3,a0=s*PI/3,a1=a0+PI/3;
+        set3(strT[h*20+j],dome(X+95*(cos(a0)+(cos(a1)-cos(a0))*f),Y+95*(sin(a0)+(sin(a1)-sin(a0))*f)))}
+      set3(strT[NP+h],dome(X,Y,40))}}},
+  // the snake game, played for real
+  {name:'snake',flat:1,live:1,ai:[0,1,2,3,4,5,6].map(i=>8+i*21),tick:snTick,mk(){snInit();
+    const C=[-1,-1,1,-1,1,1,-1,1],z=-2*252*252*SK;for(let k=0;k<8;k++)set3(strT[XB+k],[C[(k+1>>1)%4*2]*252,C[(k+1>>1)%4*2+1]*252,z])}},
 ];
-let shape=0,str=[],strT=[];
-function setShape(i){shape=i%SHAPES.length;const S=SHAPES[shape];strT=[];for(let j=0;j<NP;j++)strT.push(S.f(j/(S.closed?NP:NP-1)*2*PI));if(!str.length)str=strT.map(p=>p.map(x=>x*.2))}
-const beadIdx=i=>SHAPES[shape].closed?floor((i+.5)/B.length*NP):floor(6+i/(B.length-1)*(NP-13));
-{let last=-1;try{last=+localStorage.getItem('jpw-shape')}catch(e){}let i=floor(random()*SHAPES.length);if(i===last)i=(i+1)%SHAPES.length;setShape(i);try{localStorage.setItem('jpw-shape',i)}catch(e){}}
+let shape=0,AI=[],shapeT=0,born=0;
+function setShape(i){shape=(i%SHAPES.length+SHAPES.length)%SHAPES.length;const S=SHAPES[shape];endAntic();
+  for(const p of strT)p[0]=p[1]=p[2]=0;
+  if(S.mk)S.mk();else for(let j=0;j<NP;j++)set3(strT[j],S.f(j/(S.closed?NP:NP-1)*2*PI));
+  AI=S.ai||B.map((b,i)=>S.closed?floor((i+.5)/B.length*NP):floor(6+i/(B.length-1)*(NP-13)));shapeT=t;
+  if(!born){born=1;for(let j=0;j<NT;j++)for(let i=0;i<3;i++)str[j][i]=strT[j][i]*.2}}
+B.forEach((b,i)=>b.i=i);
 
 const cv=document.getElementById('c'),ctx=cv.getContext('2d'),card=document.getElementById('card'),hint=document.getElementById('hint'),$=id=>document.getElementById(id);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const R0=()=>mul(axisAngle([1,0,0],-.3),axisAngle([0,1,0],.45));
 let W=0,H=0,dpr=1,phone=false,col={},Rm=R0(),cam={z:1,uz:1},cx=0,cy=0,active=null,focus=null,hover=null,aim=false,spin=[0,0],idle=0;
-let pulse=null,bursts=[],lit=new Map(),labelRects=[],t=0,strA=1,escape=null,nextEscape=260;
+let pulse=null,bursts=[],lit=new Map(),labelRects=[],t=0,strA=1,antic=null,nextAntic=260,lastK='',PLAY=null;
 const CAMD=1150,WHITE='#ffffff',BLACK='#141414';
 let bgNow=WHITE,flood=null,inkCss='';
 const lum=h=>{const v=parseInt(h.slice(1),16);return(.299*(v>>16&255)+.587*(v>>8&255)+.114*(v&255))/255};
@@ -354,13 +403,99 @@ const fit=()=>max(.3,min(1.1,min(W-(cardOpen()&&W>980?300:0),phone&&cardOpen()?H
 const visible=n=>{if(!n.depth)return false;if(!focus)return n.depth===1;if(n.branch!==focus)return false;if(n===focus)return true;for(let p=n.parent;p&&p!==focus;p=p.parent)if(!p.open)return false;return true};
 const chain=n=>{const a=[];for(let p=n;p;p=p.parent)a.unshift(p);return a};
 const proj=p=>{const q=rot(Rm,p),s=CAMD/(CAMD-q[2])*cam.z;return[cx+q[0]*s,cy+q[1]*s,q[2],s]};
-const beadPos=b=>str[beadIdx(B.indexOf(b))];
+// screen projection without allocating, and each bead's anchor on the string (plus whatever an antic has pushed it by)
+const pjx=(x,y,z,o)=>{const qx=Rm[0]*x+Rm[1]*y+Rm[2]*z,qy=Rm[3]*x+Rm[4]*y+Rm[5]*z,qz=Rm[6]*x+Rm[7]*y+Rm[8]*z,s=CAMD/(CAMD-qz)*cam.z;o[0]=cx+qx*s;o[1]=cy+qy*s;o[2]=qz;o[3]=s;return o};
+const BP=[0,0,0],bpos=(i,o=BP)=>{const j=AI[i],a=str[j],s=so[j];o[0]=a[0]+s[0];o[1]=a[1]+s[1];o[2]=a[2]+s[2];return o};
+const beadPos=b=>bpos(b.i);
+/* ---------- antics ---------- */
+// now and then a ball gets up to something. ANT[k]={w,len,ok(S),start(a),tg(a,n,tg,f) edits a target,fr(a,f) per frame (may write so[]),draw(a,f,ink),hide(a,f)}
+const ANT=Object.create(null),ez=x=>x<=0?0:x>=1?1:x*x*(3-2*x),UPV=[0,0,0],upw=()=>{UPV[0]=-Rm[3];UPV[1]=-Rm[4];UPV[2]=-Rm[5];return UPV};
+const B1=[0,0,0],B2=[0,0,0],gap=(i,j)=>{const p=bpos(i,B1),q=bpos(j,B2),d=[q[0]-p[0],q[1]-p[1],q[2]-p[2]],l=hypot(d[0],d[1],d[2])||1;return{d:d.map(x=>x/l),l}};
+const nb=i=>i+1<B.length?i+1:SHAPES[shape].closed?0:i-1,ring=n=>bursts.push({n,t0:performance.now(),ink:1});
+const push=(tg,d,x)=>{tg[0]+=d[0]*x;tg[1]+=d[1]*x;tg[2]+=d[2]*x};
+const font=(w,px)=>ctx.font=`${w} ${px}px "Familjen Grotesk","Helvetica Neue",Arial,sans-serif`;
+ANT.escape={w:2,len:95,ok:()=>1,
+  start(a){const c=nodes.filter(n=>visible(n)&&n!==active&&n!==focus&&n!==hover&&!(n.open&&n.kids.length));if(!c.length)return false;a.n=c[floor(random()*c.length)]},
+  tg(a,n,tg){if(n!==a.n)return;const d=norm(hypot(tg[0],tg[1],tg[2])>20?tg:[.4,-1,.3]),k=95+sin(t*.6)*14;tg[0]+=d[0]*k+sin(t*.9)*9;tg[1]+=d[1]*k+cos(t*1.1)*9;tg[2]+=d[2]*k}};
+// one ball rolls into the next, which knocks the next, down the line; the last one flies off and comes back
+const CT=k=>44+k*14;
+ANT.chain={w:1,len:190,ok:S=>!S.live,
+  start(a){const n=B.length,s=SHAPES[shape].closed?floor(random()*n):0;a.o=B.map((_,k)=>(s+k)%n);a.d=[];a.g=[];
+    for(let k=0;k<n-1;k++){const r=gap(a.o[k],a.o[k+1]);a.d.push(r.d);a.g.push(max(0,r.l-52))}a.d.push(a.d[n-2]);a.g.push(120)},
+  tg(a,n,tg,f){if(n.depth!==1)return;const k=a.o.indexOf(n.i),g=a.g[k],L=B.length-1;let x=0;
+    if(k===0)x=f<30?-70*ez(f/30):f<CT(0)?-70+(g+70)*((f-30)/14)**2:f<CT(0)+22?g:g*(1-ez((f-CT(0)-22)/28));
+    else if(k<L){const u=f-CT(k-1);x=u<0?0:u<14?g*u/14:u<36?g:g*(1-ez((u-36)/28))}
+    else{const u=f-CT(L-1);x=u<0?0:u<14?g*(1-(1-u/14)**2):g*(1-ez((u-14)/24))}
+    if(x){push(tg,a.d[k],x);n.kk=.24}},
+  fr(a,f){for(let k=0;k<B.length-1;k++)if(f===CT(k)){const m=B[a.o[k+1]];ring(m);push(m.v,a.d[k],7)}}};
+// one ball winds up and smashes its neighbour to bits; the bits lie there a moment, then fly back together
+const SH=Array.from({length:14},()=>({x:0,y:0,vx:0,vy:0,a:0,va:0,s:0,ox:0,oy:0,lx:0,ly:0}));
+ANT.crumble={w:1,len:170,ok:()=>1,
+  start(a){a.i=floor(random()*B.length);a.j=nb(a.i);const r=gap(a.i,a.j);a.d=r.d;a.g=max(0,r.l-50);const c=col[hueOf(B[a.j])]||'#888888';a.c1=c;a.c2=mix(c,'#000000',.3,1);a.c3=mix(c,'#ffffff',.45,1)},
+  tg(a,n,tg,f){if(n.depth!==1||n.i!==a.i)return;const x=f<28?-80*ez(f/28):f<40?-80+(a.g+80)*((f-28)/12)**2:f<58?a.g:a.g*(1-ez((f-58)/30));push(tg,a.d,x);n.kk=.25},
+  fr(a,f){const b=B[a.j],[bx,by]=b.s;
+    if(f===40){ring(b);a.fl=by+70;const sc=b.s[3];
+      SH.forEach((s,k)=>{const an=-PI/2+(k/13-.5)*3+(random()-.5)*.4,sp=4+random()*6;s.ox=cos(an)*b.r*.45;s.oy=sin(an)*b.r*.45;s.x=bx+s.ox;s.y=by+s.oy;
+        s.vx=cos(an)*sp*.55;s.vy=sin(an)*sp-4;s.a=random()*6.3;s.va=(random()-.5)*.5;s.s=(10+random()*7)*sc})}
+    if(f>40&&f<122)for(const s of SH){s.vy+=.5;s.x+=s.vx;s.y+=s.vy;s.a+=s.va;if(s.y>a.fl){s.y=a.fl;s.vy*=-.4;s.vx*=.6;s.va*=.5}}
+    if(f===122)for(const s of SH){s.lx=s.x;s.ly=s.y}
+    if(f>122&&f<=140){const u=((f-122)/18)**2;for(const s of SH){s.x=s.lx+(bx+s.ox-s.lx)*u;s.y=s.ly+(by+s.oy-s.ly)*u-sin(PI*u)*40;s.a+=.3}}
+    if(f===140){b.rr*=1.35;ring(b)}},
+  hide:(a,f)=>f>=40&&f<140?B[a.j]:null,
+  draw(a,f,ink){if(f<40||f>=140)return;ctx.lineJoin='round';
+    for(const s of SH){const p=k=>[s.x+cos(s.a+k)*s.s,s.y+sin(s.a+k)*s.s],p0=p(0),p1=p(2.2),p2=p(4.3),m=[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2];
+      ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.lineTo(m[0],m[1]);ctx.closePath();ctx.fillStyle=a.c3;ctx.fill();
+      ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(m[0],m[1]);ctx.lineTo(p2[0],p2[1]);ctx.closePath();ctx.fillStyle=a.c2;ctx.fill();
+      ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.lineTo(p2[0],p2[1]);ctx.closePath();ctx.strokeStyle=ink;ctx.lineWidth=1.3;ctx.stroke()}}};
+// a ball grows hands and tries to tie the two ends of the string together; it can't quite, and the string whips back
+ANT.tie={w:1,len:290,ok:S=>!S.closed&&!S.brk&&!S.live,
+  start(a){let h=0;for(let i=1;i<B.length;i++)if(AI[i]<AI[h])h=i;a.h=h;const A=str[0],Z=str[NP-1];a.V=[Z[0]-A[0],Z[1]-A[1],Z[2]-A[2]];a.D=[0,0,0];a.p=0},
+  fr(a,f){const p=f<45?0:f<170?.85*ez((f-45)/125):.85;
+    if(f<215){a.p=p+(f>=160?sin(f*1.9)*.014:0);for(let i=0;i<3;i++)a.D[i]=a.V[i]*a.p;
+      for(let j=0;j<35;j++){const w=(1-j/35)**2;for(let i=0;i<3;i++)so[j][i]=a.D[i]*w}}
+    if(f===215){const b=B[a.h];for(let i=0;i<3;i++)b.v[i]-=a.V[i]*.07}},
+  tg(a,n,tg,f){if(n.depth!==1||n.i!==a.h||f>=215)return;push(tg,a.D,.92-(AI[a.h]<35?(1-AI[a.h]/35)**2:0));n.kk=.2},
+  draw(a,f,ink){const b=B[a.h],[x,y]=b.s,r=b.r,g=f<30?ez(f/30):f<225?1:1-ez((f-225)/40);if(g<=0)return;
+    const e0=SP[0],e1=SP[NP-1];let h1x,h1y,h2x,h2y;
+    if(f<215){const d=hypot(e0[0]-x,e0[1]-y)||1,u=f<30?0:ez((f-30)/15),rx=x+(e0[0]-x)/d*(r+22)*g,ry=y+(e0[1]-y)/d*(r+22)*g+6*g;
+      h1x=rx+(e0[0]-rx)*u;h1y=ry+(e0[1]-ry)*u;
+      const d2=hypot(e1[0]-x,e1[1]-y)||1,L=min(d2,(r+22)*g+(f<45?0:110*ez((f-45)/110))),tr=f>=160?sin(f*2.3)*3:0;
+      h2x=x+(e1[0]-x)/d2*L+tr;h2y=y+(e1[1]-y)/d2*L-tr}
+    else{const q=(r+18+30*g);h1x=x+cos(PI+.6+sin(f*.55)*1.2)*q;h1y=y+sin(PI+.6+sin(f*.55)*1.2)*q;h2x=x+cos(-.6+sin(f*.6+1)*1.2)*q;h2y=y+sin(-.6+sin(f*.6+1)*1.2)*q}
+    const arm=(hx,hy,bend)=>{const dx=hx-x,dy=hy-y,l=hypot(dx,dy)||1,sx=x+dx/l*r*.85,sy=y+dy/l*r*.85,mx=(sx+hx)/2-dy/l*bend,my=(sy+hy)/2+dx/l*bend;
+      ctx.beginPath();ctx.moveTo(sx,sy);ctx.quadraticCurveTo(mx,my,hx,hy);ctx.strokeStyle=ink;ctx.lineWidth=3.5;ctx.lineCap='round';ctx.stroke();ctx.lineCap='butt';
+      ctx.beginPath();ctx.arc(hx,hy,7.5*max(.4,g),0,6.2832);ctx.fillStyle='#ffffff';ctx.fill();ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.stroke()};
+    arm(h1x,h1y,12);arm(h2x,h2y,-12)}};
+// a stadium wave down the line of beads, and back again
+const hop=u=>u>0&&u<30?sin(PI*u/30)*85:0;
+ANT.ripple={w:1,len:150,ok:()=>1,
+  tg(a,n,tg,f){if(n.depth!==1)return;const h=hop(f-n.i*8)+hop(f-66-(B.length-1-n.i)*8);if(h){push(tg,upw(),h);n.kk=.2}}};
+// one ball nods off; its neighbour rolls over and nudges it awake
+ANT.doze={w:1,len:175,ok:()=>1,
+  start(a){a.i=floor(random()*B.length);a.j=nb(a.i);const r=gap(a.j,a.i);a.d=r.d;a.g=max(0,r.l-52)},
+  tg(a,n,tg,f){if(n.depth!==1)return;
+    if(n.i===a.i){const U=upw(),s=f<110?-55*ez(f/25)+sin(f*.11)*4:f<128?60*sin(PI*(f-110)/18):0;push(tg,U,s);n.kk=f<110?.08:.25}
+    else if(n.i===a.j){const x=f<80?0:f<110?a.g*((f-80)/30)**2:f<118?a.g:a.g*(1-ez((f-118)/30));if(x){push(tg,a.d,x);n.kk=.2}}},
+  fr(a,f){if(f===110){const b=B[a.i];ring(b);push(b.v,upw(),9)}},
+  draw(a,f,ink){const b=B[a.i],[x,y]=b.s,r=b.r;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+    const txt=(s,X,Y,px,al)=>{font(700,px);ctx.lineWidth=4;ctx.strokeStyle=rgba('#ffffff',al);ctx.strokeText(s,X,Y);ctx.fillStyle=rgba(ink,al);ctx.fillText(s,X,Y)};
+    if(f<110)for(let g=0;g<4;g++){const u=f-(8+g*24);if(u>0&&u<64)txt('z',x+r*.7+u*.6+sin(u*.13)*7,y-r*.7-u*1.2,24+u*.4,min(1,u/5,(64-u)/12))}
+    else if(f<160){const u=f-110;txt('!',x,y-r-22-min(u,8)*1.5,40*(1+.5*max(0,1-u/8)),u<38?1:(50-u)/12)}}};
+const AK=Object.keys(ANT);
+function startAntic(k){const S=SHAPES[shape];if(k&&!(focus?k==='escape':ANT[k].ok(S)))k=null;
+  if(!k){const ks=focus?['escape']:AK.filter(x=>x!==lastK&&ANT[x].ok(S));let w=0;for(const x of ks)w+=ANT[x].w;let r=random()*w;k=ks.find(x=>(r-=ANT[x].w)<0)||ks[0]}
+  if(!k)return;const a={k,A:ANT[k],t0:t,fo:focus};if(a.A.start&&a.A.start(a)===false){nextAntic=60;return}antic=a;lastK=k}
+function endAntic(){if(!antic)return;antic=null;nextAntic=PLAY?120:240+random()*300}
+{const q=new URLSearchParams(location.search),qs=SHAPES.findIndex(s=>s.name===q.get('shape')),qp=q.get('play')||'';
+  if(qs>=0)setShape(qs);else{let last=-1;try{last=+localStorage.getItem('jpw-shape')}catch(e){}let i=floor(random()*SHAPES.length);if(i===last)i=(i+1)%SHAPES.length;setShape(i);try{localStorage.setItem('jpw-shape',i)}catch(e){}}
+  if(!reduce&&Object.hasOwn(ANT,qp)){if(!ANT[qp].ok(SHAPES[shape])&&qs<0)setShape(SHAPES.findIndex(s=>s.name==='spring'));if(ANT[qp].ok(SHAPES[shape])){PLAY=qp;nextAntic=90}}}
+window.play=k=>{k=String(k);if(reduce||!Object.hasOwn(ANT,k)||!(focus?k==='escape':ANT[k].ok(SHAPES[shape])))return false;endAntic();startAntic(k);return!!antic};
 
 /* ---------- selecting ---------- */
 function setHash(id){try{history.replaceState(null,'','#'+id)}catch(e){}}
 function kick(n){if(reduce)return;for(const m of nodes){if(m===n||m.a<.5)continue;const d=[0,1,2].map(i=>m.p[i]-n.p[i]),l=hypot(d[0],d[1],d[2])||1,f=260/(l+70);for(let i=0;i<3;i++)m.v[i]+=d[i]/l*f}}
 function go(n,opt){
-  if(!n)return;opt=opt||{};hint.classList.add('off');escape=null;
+  if(!n)return;opt=opt||{};hint.classList.add('off');endAntic();
   if(n===root){focus=null;active=root;aim=false;nodes.forEach(m=>m.open=false);render();setBg(BLACK,[cx,cy]);setHash('jp');return}
   const prev=active,same=n===active,inBranch=focus===n.branch&&prev&&prev!==root&&prev.branch===n.branch;
   focus=n.branch;for(let p=n.parent;p&&p.depth>=1;p=p.parent)p.open=true;active=n;
@@ -490,19 +625,24 @@ function step(){
       const v=norm(rot(Rm,active.lt)),f=norm(phone?[.25,-.86,.44]:[.84,-.36,.4]),ax=cross(v,f),l=hypot(ax[0],ax[1],ax[2]),g=atan2(l,dot(v,f));
       if(l>1e-4&&g>.012)Rm=mul(axisAngle([ax[0]/l,ax[1]/l,ax[2]/l],g*(reduce?1:.085)),Rm);else aim=false;
     }else if(hypot(spin[0],spin[1])>.0004){Rm=mul(axisAngle([0,1,0],spin[0]),mul(axisAngle([1,0,0],-spin[1]),Rm));spin=[spin[0]*.95,spin[1]*.95]}
-    else if(!reduce&&idle>90&&!hover&&!(active&&active.depth>=2))Rm=mul(axisAngle([0,1,0],.0022),Rm);
+    else if(!reduce&&idle>90&&!hover&&!(active&&active.depth>=2)){
+      // flat shapes never spin edge-on: they rock about half a radian either side of facing you, and ease back after a drag
+      if(SHAPES[shape].flat&&!focus){const c=x=>max(-.004,min(.004,x)),yw=atan2(Rm[2],Rm[8]),pt=atan2(Rm[5],Rm[8]);
+        Rm=mul(axisAngle([0,1,0],c((.5*sin(t*.004)-yw)*.03)),mul(axisAngle([1,0,0],c((pt-.3)*.03)),Rm))}
+      else Rm=mul(axisAngle([0,1,0],.0022),Rm)}
   }
   if(t%200===0)Rm=ortho(Rm);
   const[tx,ty]=centerT();cx+=(tx-cx)*.1;cy+=(ty-cy)*.1;
   cam.z+=(fit()*cam.uz*(active&&active.depth>=4?.8:1)-cam.z)*.1;
-  for(let j=0;j<NP;j++)for(let i=0;i<3;i++)str[j][i]+=(strT[j][i]-str[j][i])*.07;
+  const S=SHAPES[shape];if(S.live&&!(reduce||hover||down||ptrs.size||antic||focus))S.tick();
+  const ek=S.live&&t-shapeT>60?.3:.07;
+  for(let j=0;j<NT;j++){const a=str[j],b=strT[j],o=so[j];for(let i=0;i<3;i++){a[i]+=(b[i]-a[i])*ek;o[i]*=.86}}
   strA+=((focus?0:1)-strA)*.12;
-  // now and then one ball makes a run for it, then gets pulled back
-  if(!reduce&&!down&&!pulse){
-    if(escape&&t>escape.until)escape=null;
-    if(!escape&&--nextEscape<0){const c=nodes.filter(n=>visible(n)&&n!==active&&n!==focus&&n!==hover&&!(n.open&&n.kids.length));
-      if(c.length)escape={n:c[floor(random()*c.length)],until:t+95};nextEscape=300+random()*320}
-  }
+  // now and then a ball gets up to something (see antics); never while you are using the page
+  const busy=down||hover||pulse||ptrs.size>0;
+  if(antic&&(busy||focus!==antic.fo||t-antic.t0>antic.A.len))endAntic();
+  if(!antic){if(nextAntic>0)nextAntic--;else if(!reduce&&!busy&&(idle>120||PLAY))startAntic(PLAY)}
+  const AF=antic&&antic.A,af=antic?t-antic.t0:0;if(AF&&AF.fr)AF.fr(antic,af);
   for(const n of nodes){
     if(!n.depth)continue;
     const v=visible(n);n.a+=((v?1:0)-n.a)*.16;let tg;
@@ -511,9 +651,9 @@ function step(){
     else if(v||n===focus)tg=n===focus?[0,0,0]:n.lt;
     else{let p=n.parent;while(p&&p!==focus&&!visible(p))p=p.parent;tg=p?p.p:[0,0,0]}
     if(v&&!reduce){
-      tg=[tg[0]+sin(t*.011+n.ph)*5,tg[1]+cos(t*.009+n.ph*1.7)*5,tg[2]+sin(t*.008+n.ph*2.3)*5];
-      if(escape&&escape.n===n){const d=norm(hypot(tg[0],tg[1],tg[2])>20?tg:[.4,-1,.3]),k=95+sin(t*.6)*14;tg=[tg[0]+d[0]*k+sin(t*.9)*9,tg[1]+d[1]*k+cos(t*1.1)*9,tg[2]+d[2]*k]}
-      for(let i=0;i<3;i++){n.v[i]=(n.v[i]+(tg[i]-n.p[i])*.055)*.83;n.p[i]+=n.v[i]}
+      tg=[tg[0]+sin(t*.011+n.ph)*5,tg[1]+cos(t*.009+n.ph*1.7)*5,tg[2]+sin(t*.008+n.ph*2.3)*5];n.kk=.055;
+      if(AF)AF.tg&&AF.tg(antic,n,tg,af);
+      for(let i=0;i<3;i++){n.v[i]=(n.v[i]+(tg[i]-n.p[i])*n.kk)*.83;n.p[i]+=n.v[i]}
     }else for(let i=0;i<3;i++){n.v[i]=0;n.p[i]+=(tg[i]-n.p[i])*.16}
     n.s=proj(n.p);n.f=.55+.45*max(0,min(1,(n.s[2]+300)/600));
     const ld=focus?n.depth-1:0,rt=!focus?25:n===focus?27:ld===1?14:ld===2?9.5:8;n.rr+=(rt-n.rr)*.15;
@@ -530,6 +670,12 @@ function ball(x,y,r,hex,al){
 }
 function ctrl(a,b){const m=[0,1,2].map(i=>(a.p[i]+b.p[i])/2),l=hypot(m[0],m[1],m[2]),r=(hypot(...a.p)+hypot(...b.p))/2;
   return l<20?[m[0]+r*.5,m[1]-r*.5,m[2]]:m.map(x=>x/l*max(l*1.2,r*1.1))}
+// the snake's head (with eyes) and the food
+const FQ=[0,0,0,1];
+function snDraw(ink,al){const q=SP[0],p=SP[4],sc=q[3];let dx=q[0]-p[0],dy=q[1]-p[1];const l=hypot(dx,dy)||1;dx/=l;dy/=l;
+  ctx.fillStyle=rgba(ink,al);ctx.beginPath();ctx.arc(q[0],q[1],8*sc,0,6.2832);ctx.fill();ctx.fillStyle='#ffffff';
+  for(const e of [-1,1]){ctx.beginPath();ctx.arc(q[0]+(dx*2-dy*e*3)*sc,q[1]+(dy*2+dx*e*3)*sc,1.6*sc,0,6.2832);ctx.fill()}
+  const x=CX(SN.food),y=CY(SN.food);pjx(x,y,-(x*x+y*y)*SK,FQ);const h=8*FQ[3];ctx.fillStyle=rgba(ink,al);ctx.fillRect(FQ[0]-h,FQ[1]-h,2*h,2*h)}
 function draw(){
   const now=performance.now();ctx.setTransform(dpr,0,0,dpr,0,0);
   let bg=bgNow;ctx.fillStyle=bgNow;ctx.fillRect(0,0,W,H);
@@ -540,9 +686,15 @@ function draw(){
   if(ink!==inkCss){inkCss=ink;document.documentElement.style.setProperty('--ink',ink);document.documentElement.style.setProperty('--paper',bg)}
   const onPath=new Set(active&&active!==root?chain(active).slice(1):[]);
   // the string the beads sit on
-  if(strA>.02){const S=SHAPES[shape];ctx.beginPath();for(let j=0;j<NP;j++){const q=proj(str[j]);j?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1])}if(S.closed)ctx.closePath();
-    ctx.strokeStyle=rgba(ink,.55*strA);ctx.lineWidth=1.6;ctx.lineJoin='round';ctx.stroke();
-    for(const b of B){const q=proj(beadPos(b));if(hypot(q[0]-b.s[0],q[1]-b.s[1])>3){ctx.beginPath();ctx.moveTo(q[0],q[1]);ctx.lineTo(b.s[0],b.s[1]);ctx.strokeStyle=rgba(ink,.55*strA);ctx.lineWidth=1.2;ctx.stroke()}}}
+  const S=SHAPES[shape],hid=antic&&antic.A.hide?antic.A.hide(antic,t-antic.t0):null;
+  for(let j=0;j<NT;j++){const a=str[j],o=so[j];pjx(a[0]+o[0],a[1]+o[1],a[2]+o[2],SP[j])}
+  if(strA>.02){const sa=strA*(S.live&&SN.over&&floor(SN.over/12)%2?.12:1);ctx.beginPath();
+    for(let j=0;j<NP;j++){const q=SP[j];j&&!(S.brk&&j%S.brk===0)?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1])}if(S.closed&&!S.brk)ctx.closePath();
+    ctx.strokeStyle=rgba(ink,.55*sa);ctx.lineWidth=S.live?4:1.6;ctx.lineJoin=ctx.lineCap='round';ctx.stroke();ctx.lineCap='butt';ctx.beginPath();
+    for(let j=XB;j<NT;j+=2){const a=SP[j],b=SP[j+1];if(hypot(a[0]-b[0],a[1]-b[1])>=2){ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1])}}
+    ctx.lineWidth=1.6;ctx.stroke();
+    if(S.live)snDraw(ink,sa);
+    for(const b of B){const q=SP[AI[b.i]];if(b!==hid&&hypot(q[0]-b.s[0],q[1]-b.s[1])>3){ctx.beginPath();ctx.moveTo(q[0],q[1]);ctx.lineTo(b.s[0],b.s[1]);ctx.strokeStyle=rgba(ink,.55*strA);ctx.lineWidth=1.2;ctx.stroke()}}}
   const edges=front=>{
     for(const n of nodes){
       if(n.a>.5)for(const m of n.links2){if(n.id>m.id||m.a<.5)continue;if(!(n===active||m===active||n===hover||m===hover))continue;const c=proj(ctrl(n,m));if((c[2]>=0)!==front)continue;
@@ -555,7 +707,7 @@ function draw(){
   };
   const dots=list=>{for(const n of list){
     const[x,y,,sc]=n.s,on=onPath.has(n),hot=n===hover||n===active,r=n.rr*sc*(hot?1.18:1);n.r=r;
-    const al=n.a*(on||hot||!focus?1:n.f);let fill=n===focus?'#ffffff':col[hueOf(n)];if(fill===bg)fill='#ffffff';
+    if(n===hid)continue;const al=n.a*(on||hot||!focus?1:n.f);let fill=n===focus?'#ffffff':col[hueOf(n)];if(fill===bg)fill='#ffffff';
     if(n===active){ctx.beginPath();ctx.arc(x,y,r+6,0,6.2832);ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=4;ctx.stroke()}
     if(n.kids.length&&!n.open&&focus&&n!==focus){ctx.beginPath();ctx.arc(x,y,r+4.5,0,6.2832);ctx.strokeStyle=mix(fill,'#000000',.35,.7*al);ctx.lineWidth=1.3;ctx.stroke()}
     if(n.s1){ctx.beginPath();ctx.arc(x,y,r,0,6.2832);ctx.fillStyle=bg;ctx.fill();ctx.setLineDash([3,3]);ctx.strokeStyle=mix(fill,'#000000',.4,al);ctx.lineWidth=1.6;ctx.stroke();ctx.setLineDash([])}
@@ -563,6 +715,7 @@ function draw(){
   }};
   const order=nodes.filter(n=>n.a>.05&&n.depth).sort((a,b)=>a.s[2]-b.s[2]);
   edges(false);dots(order.filter(n=>n.s[2]<0));edges(true);dots(order.filter(n=>n.s[2]>=0));
+  if(antic&&antic.A.draw)antic.A.draw(antic,t-antic.t0,ink);
   if(pulse){
     const p=min(1,(now-pulse.t0)/pulse.dur);let pts;
     if(pulse.cross){const[a,b]=pulse.cross,c=proj(ctrl(a,b));pts=[];for(let i=0;i<=16;i++){const u=i/16;pts.push([(1-u)*(1-u)*a.s[0]+2*u*(1-u)*c[0]+u*u*b.s[0],(1-u)*(1-u)*a.s[1]+2*u*(1-u)*c[1]+u*u*b.s[1]])}}
@@ -575,7 +728,7 @@ function draw(){
     if(p>=1){const d=pulse.done;pulse=null;d()}
   }
   bursts=bursts.filter(b=>now-b.t0<700);
-  for(const b of bursts){const k=(now-b.t0)/700,q=b.n.s;ctx.beginPath();ctx.arc(q[0],q[1],(b.n.r||12)+4+k*50,0,6.2832);ctx.strokeStyle=`rgba(255,255,255,${(1-k)*.9})`;ctx.lineWidth=3*(1-k)+.5;ctx.stroke()}
+  for(const b of bursts){const k=(now-b.t0)/700,q=b.n?b.n.s:pjx(b.w[0],b.w[1],b.w[2],FQ);ctx.beginPath();ctx.arc(q[0],q[1],(b.n?b.n.r||12:10)+4+k*50,0,6.2832);ctx.strokeStyle=b.ink?rgba(ink,(1-k)*.9):`rgba(255,255,255,${(1-k)*.9})`;ctx.lineWidth=(b.ink?4:3)*(1-k)+.5;ctx.stroke()}
   // labels: most important first, skip any that would collide
   labelRects=[];ctx.textBaseline='middle';
   const pri=n=>(onPath.has(n)?1e4:0)+(n===hover?5e3:0)+(n===focus||!focus?4e3:0)+(active&&n.parent===active?2e3:0)-n.depth*300+n.s[2];
