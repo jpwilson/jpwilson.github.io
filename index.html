@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Jean-Paul Wilson</title>
 <link rel="icon" id="fav" type="image/png" href="data:image/png;base64,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">
@@ -101,6 +101,7 @@ body.listing .ico .g{display:block}
 .chip.up{border-style:double;border-width:3px;padding:2.5px 10px}
 .chip.cross{border-style:dashed}
 .chip.seq{border-style:dotted;border-width:2px;padding:3.5px 10.5px}
+.card.places .chip{border-style:solid;border-width:1.5px;padding:4px 11px}
 .key{font-family:var(--mono);font-size:9px;opacity:.55;margin:0;line-height:1.6}
 .card h1::before{content:"";display:inline-block;width:.42em;height:.42em;border-radius:50%;background:var(--hue,#141414);border:1.5px solid #141414;margin-right:.3em;vertical-align:.12em}
 .meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;margin:0;line-height:1.6;opacity:.7}
@@ -174,6 +175,8 @@ body.listing .ico .g{display:block}
   <div class="inner"><ul id="tree"></ul></div>
 </div>
 
+<script src="globe.js"></script>
+<script src="trip-map.js"></script>
 <script>
 /* ---------- data ---------- */
 /* s:1 marks a placeholder that the public build hides. seq:1 means the children are in time order and get chained together. */
@@ -236,8 +239,8 @@ const DATA=N('jp','Jean-Paul Wilson',{d:'Lead AI Engineer at Nerdy. Mechanical e
       ]),
     ]),
   ]),
-  N('earth','Earth',{title:'Places I’ve been',d:'Four homes on two continents, and the trips in between.',stats:1},[
-    N('lived','Lived',{d:'Four places, in order: Johannesburg, Champaign, Chicago, Edmond.'},[
+  N('earth','Earth',{d:'Homes and journeys.'},[
+    N('lived','Lived',{d:'Places I’ve called home.'},[
       N('africa','Africa',{},[N('za','South Africa',{d:'Where JP grew up, studied and started his career.'},[N('gauteng','Gauteng',{},[N('jhb','Johannesburg',{st:'lived',d:'Studied engineering at Wits and worked at Eskom.'})])])]),
       N('namerica','North America',{},[N('usa','United States',{},[
         N('il','Illinois',{},[N('champaign','Champaign',{st:'lived',d:'First stop in the United States.'}),N('chicago','Chicago',{st:'lived',d:'First Stop Health, C.H. Robinson and VillageMD.'})]),
@@ -248,12 +251,29 @@ const DATA=N('jp','Jean-Paul Wilson',{d:'Lead AI Engineer at Nerdy. Mechanical e
       N('t1998','1998 · United States',{meta:'1998',d:'Oklahoma, Missouri and Dallas.'},[N('v-ok','Oklahoma'),N('v-mo','Missouri'),N('v-dallas','Dallas')]),
       N('t2001','2001 · Switzerland',{meta:'May and June 2001'}),
       N('t2007','2007 · Thailand',{meta:'December 2007'}),
+      N('t2008','2008 · Mozambique',{meta:'2008'},[N('v-xaixai','Xai-Xai')]),
       N('t2011','2011 · Argentina',{meta:'September 2011',d:'From the falls in the north to the glaciers in the south.'},[
         N('v-ba','Buenos Aires'),N('v-iguazu','Iguazú Falls'),N('v-mendoza','Mendoza'),N('v-chalten','El Chaltén'),N('v-perito','Perito Moreno Glacier')]),
-      N('t2015','2015 · Abu Dhabi and India',{meta:'2015',d:'Honeymoon.'},[N('v-abudhabi','Abu Dhabi'),N('v-india','India')]),
+      N('t2014-us','2014 · United States',{meta:'October 2014',seq:1,d:'Texas first, then Oklahoma.'},[
+        N('v-texas-2014','Texas',{seq:1},[N('v-austin-2014','Austin'),N('v-dallas-2014','Dallas')]),
+        N('v-ok-2014','Oklahoma',{seq:1},[N('v-okc-2014','Oklahoma City'),N('v-edmond-2014','Edmond')])]),
+      N('t2015','2015 · Abu Dhabi and India',{meta:'2015',d:'Honeymoon.',seq:1},[
+        N('v-abudhabi','Abu Dhabi'),N('v-india','India',{},[
+          N('v-agra','Agra',{},[N('v-agra-fort','Agra Fort'),N('v-taj-mahal','Taj Mahal')]),N('v-goa','Goa')])]),
+      N('t2016-ca','2016 · Canada',{meta:'September 2016',seq:1,d:'Toronto, Niagara Falls and time in Burlington.'},[
+        N('v-toronto','Toronto'),N('v-niagara','Niagara Falls',{meta:'Ontario, Canada'}),
+        N('v-burlington','Burlington',{meta:'Ontario, Canada'},[N('v-burlington-pier','Brant Street Pier',{meta:'Burlington Pier · Burlington, Ontario'})])]),
+      N('t2016','2016 · United States',{meta:'2016 · California',seq:1,d:'Down Highway 1, from San Francisco to Southern California.'},[
+        N('v-sf','San Francisco'),N('v-santa-barbara','Santa Barbara'),N('v-la','Los Angeles'),N('v-irvine','Irvine'),N('v-orange-county','Orange County')]),
+      N('t2024-uk','2024 · United Kingdom',{meta:'May 2024',seq:1,d:'Time in England, before heading to Switzerland.'},[
+        N('v-cranleigh','Cranleigh'),N('v-guildford','Guildford'),N('v-chilworth','Chilworth'),N('v-london','London')]),
+      N('t2024-ch','2024 · Switzerland',{meta:'May 2024',seq:1,d:'Stayed in Lauterbrunnen, explored the mountains and spent time in Zurich.'},[
+        N('v-lauterbrunnen','Lauterbrunnen',{d:'Our base for the trip.'}),N('v-grindelwald','Grindelwald'),N('v-interlaken','Interlaken'),N('v-zurich','Zurich')]),
       N('t2025','2025 · Caribbean cruise',{meta:'January 2025',d:'Seven nights on Harmony of the Seas, out of Galveston and back.'},[
         N('v-galveston','Galveston'),N('v-roatan','Roatán, Honduras'),N('v-costamaya','Costa Maya, Mexico'),N('v-cozumel','Cozumel, Mexico')]),
       N('tza','South Africa, many times',{d:'Back home, again and again.'},[N('v-jhb','Johannesburg',{d:'Several times.'}),N('v-capetown','Cape Town')]),
+      N('tus-other','More United States',{meta:'Other visits'},[
+        N('v-chicago','Chicago'),N('v-denver','Denver'),N('v-new-york','New York',{},[N('v-manhattan','Manhattan'),N('v-brooklyn','Brooklyn')])]),
     ]),
   ]),
   N('family','Family',{d:'Five of us in Edmond, and the rest of the family spread across six other countries.'},[
@@ -295,6 +315,22 @@ const nodes=[],byId=Object.create(null);
   nodes.push(n);byId[n.id]=n;n.kids.forEach(k=>walk(k,n,depth+1,depth===1?n:branch));
   if(n.seq)n.kids.forEach((k,i)=>{k.prev=n.kids[i-1]||null;k.next=n.kids[i+1]||null});
 })(DATA,null,0,null);
+// Visited places use geographic coordinates. State-only stops use a representative state centre.
+const GEO={jhb:[-26.2041,28.0473],champaign:[40.1164,-88.2434],chicago:[41.8781,-87.6298],edmond:[35.6528,-97.4781],
+  'v-ok':[35.59,-97.49],'v-mo':[38.35,-92.46],
+  'v-jhb':[-26.2041,28.0473],'v-capetown':[-33.9249,18.4241],'v-dallas':[32.7767,-96.797],
+  'v-xaixai':[-25.05,33.64],'v-toronto':[43.6532,-79.3832],'v-niagara':[43.0896,-79.0849],
+  'v-burlington':[43.3255,-79.799],'v-burlington-pier':[43.3229,-79.7941],
+  'v-austin-2014':[30.2672,-97.7431],'v-dallas-2014':[32.7767,-96.797],'v-okc-2014':[35.4676,-97.5164],'v-edmond-2014':[35.6528,-97.4781],
+  'v-abudhabi':[24.4539,54.3773],'v-agra':[27.1767,78.0081],'v-agra-fort':[27.1795,78.0211],'v-taj-mahal':[27.1751,78.0421],'v-goa':[15.4,74.0],
+  'v-sf':[37.7749,-122.4194],'v-santa-barbara':[34.4208,-119.6982],'v-la':[34.0522,-118.2437],'v-irvine':[33.6846,-117.8265],'v-orange-county':[33.7175,-117.8311],
+  'v-cranleigh':[51.142,-.488],'v-guildford':[51.2362,-.5704],'v-chilworth':[51.216,-.538],'v-london':[51.5074,-.1278],
+  'v-lauterbrunnen':[46.5939,7.9078],'v-grindelwald':[46.6242,8.0414],'v-interlaken':[46.6863,7.8632],'v-zurich':[47.3769,8.5417],
+  'v-chicago':[41.8781,-87.6298],'v-denver':[39.7392,-104.9903],'v-new-york':[40.7128,-74.006],
+  'v-manhattan':[40.7831,-73.9712],'v-brooklyn':[40.6782,-73.9442],
+  'v-ba':[-34.6037,-58.3816],'v-iguazu':[-25.6953,-54.4367],'v-mendoza':[-32.8895,-68.8458],'v-chalten':[-49.3315,-72.8863],'v-perito':[-50.4967,-73.1377],
+  'v-galveston':[29.3013,-94.7977],'v-roatan':[16.3298,-86.5299],'v-costamaya':[18.73,-87.7],'v-cozumel':[20.423,-86.9223]};
+Object.entries(GEO).forEach(([id,geo])=>{if(byId[id])byId[id].geo=geo});
 const root=DATA,B=root.kids,LR=[0,185,285,365,435,495,545];
 B.forEach((b,i)=>b.hueVar='--h'+(i%7+1));
 CROSS.forEach(([a,b])=>{if(byId[a]&&byId[b]){byId[a].links2.push(byId[b]);byId[b].links2.push(byId[a])}});
@@ -308,7 +344,10 @@ B.forEach(b=>(function lay(n,ld){
   n.kids.forEach((c,i)=>{let d;
     if(ld===1){if(n.seq){const u=k>1?i/(k-1):.5,a=-2.3+4.6*u;d=norm([sin(a),-.62+1.24*u,cos(a)])}
       else{const y=k>1?1-2*(i+.5)/k:0,q=sqrt(1-y*y),f=i*2.39996+.6;d=[q*cos(f),y,q*sin(f)]}}
-    else{const pd=norm(n.lt),th=k===1?0:min(.62,max(.28,.2+.05*k))*(ld===2?1:.66);
+    else{const pd=norm(n.lt),travel=n.branch===byId.earth;
+      const spread=travel?min(1.25,.55+k*.065):min(.62,max(.28,.2+.05*k));
+      const depthScale=ld===2?1:(travel?.85:.66);
+      const th=k===1?0:spread*depthScale;
       const u=norm(cross(pd,abs(pd[1])>.9?[1,0,0]:[0,1,0])),v=cross(pd,u),f=2*PI*i/(n.seq?k+1:k)+ld*1.3;
       d=norm([0,1,2].map(j=>pd[j]*cos(th)+(u[j]*cos(f)+v[j]*sin(f))*sin(th)))}
     c.lt=d.map(x=>x*r);lay(c,ld+1)});
@@ -405,7 +444,17 @@ function tuck(on){tucked=on;card.classList.toggle('tucked',on);card.setAttribute
 const replay=c=>{card.classList.remove('deal','nudge');if(c){void card.offsetWidth;card.classList.add(c)}};
 const centerT=()=>phone?[W/2,cardOpen()?max(190,(H-card.offsetHeight)/2+30):H/2+16]:[W/2+(cardOpen()&&W>980?150:0),H/2+18];
 const fit=()=>max(.3,min(1.1,min(W-(cardOpen()&&W>980?300:0),phone&&cardOpen()?H-card.offsetHeight-90:H-110)/(phone?700:800)));
-const visible=n=>{if(!n.depth)return false;if(!focus)return n.depth===1;if(n.branch!==focus)return false;if(n===focus)return true;for(let p=n.parent;p&&p!==focus;p=p.parent)if(!p.open)return false;return true};
+const visible=n=>{
+  if(!n.depth)return false;if(!focus)return n.depth===1;if(n.branch!==focus)return false;if(n===focus)return true;
+  if(focus===byId.earth&&active&&active.branch===focus){
+    if(n.depth===2)return true;
+    const hub=active.kids.length?active:active.parent;
+    if(n.parent===hub&&hub.open)return true;
+    for(let p=active;p&&p!==focus;p=p.parent)if(p===n)return true;
+    return false;
+  }
+  for(let p=n.parent;p&&p!==focus;p=p.parent)if(!p.open)return false;return true;
+};
 const chain=n=>{const a=[];for(let p=n;p;p=p.parent)a.unshift(p);return a};
 const proj=p=>{const q=rot(Rm,p),s=CAMD/(CAMD-q[2])*cam.z;return[cx+q[0]*s,cy+q[1]*s,q[2],s]};
 // screen projection without allocating, and each bead's anchor on the string (plus whatever an antic has pushed it by)
@@ -500,7 +549,8 @@ window.play=k=>{k=String(k);if(reduce||!Object.hasOwn(ANT,k)||!(focus?k==='escap
 function setHash(id){try{history.replaceState(null,'','#'+id)}catch(e){}}
 function kick(n){if(reduce)return;for(const m of nodes){if(m===n||m.a<.5)continue;const d=[0,1,2].map(i=>m.p[i]-n.p[i]),l=hypot(d[0],d[1],d[2])||1,f=260/(l+70);for(let i=0;i<3;i++)m.v[i]+=d[i]/l*f}}
 function go(n,opt){
-  if(!n)return;opt=opt||{};hint.classList.add('off');endAntic();
+  if(!n)return;opt=opt||{};hint.classList.add('off');endAntic();pulse=null;
+  const previousTrip=tripView;selectTripView(n);
   if(n===root){focus=null;active=root;aim=false;nodes.forEach(m=>m.open=false);render();setBg(BLACK,[cx,cy]);setHash('jp');return}
   const prev=active,same=n===active,inBranch=focus===n.branch&&prev&&prev!==root&&prev.branch===n.branch;
   focus=n.branch;for(let p=n.parent;p&&p.depth>=1;p=p.parent)p.open=true;active=n;
@@ -511,7 +561,7 @@ function go(n,opt){
   };
   render();aim=n.depth>=2;spin=[0,0];
   let from=prev;while(from&&inBranch&&!visible(from)&&from!==focus)from=from.parent;
-  if(inBranch&&from&&from!==n&&!reduce){
+  if(!tripView&&!previousTrip&&inBranch&&from&&from!==n&&!reduce){
     const now=performance.now();
     if(from.links2.includes(n)||from.next===n||from.prev===n)pulse={cross:[from,n],t0:now,dur:560,hue:hueVar(n),done:arrive};
     else{const ca=chain(from).slice(1),cb=chain(n).slice(1);let i=0;while(i<ca.length&&i<cb.length&&ca[i]===cb[i])i++;
@@ -522,6 +572,7 @@ function go(n,opt){
   setHash(n.id);
 }
 function clear(){
+  selectTripView(null);pulse=null;
   setBg(WHITE,active&&active!==root?[active.s[0],active.s[1]]:[cx,cy]);active=null;focus=null;aim=false;card.hidden=true;nodes.forEach(m=>m.open=false);setHash('');
 }
 function reset(){tuck(true);clear();Rm=R0();cam.uz=1;spin=[0,0];setShape(shape+1);try{localStorage.setItem('jpw-shape',shape)}catch(e){}if(!reduce)for(const b of B)for(let i=0;i<3;i++)b.v[i]+=(random()-.5)*26}
@@ -531,6 +582,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 function earthStats(){const c=nodes.filter(n=>n.st),v=byId.visited;return `${c.length} homes · ${new Set(c.map(n=>chain(n)[4])).size} countries lived in · ${v?v.kids.length:0} trips`}
 function render(){
   const n=active;if(!n){card.hidden=true;return}
+  card.classList.toggle('places',n.branch===byId.earth);
   replay(tucked?'nudge':card.hidden?'deal':'');card.hidden=false;card.style.setProperty('--hue',n===root?'#141414':`var(${hueOf(n)})`);
   const ch=chain(n);
   let h=`<button class="x" type="button" data-close="1" aria-label="Close" title="Close (Esc)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button><button class="tk" type="button" data-tuck="1" aria-label="Tuck the card away" title="Tuck away"><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></svg></button>`;
@@ -545,7 +597,7 @@ function render(){
   const nb=[];if(n.parent&&n.depth>=2)nb.push([n.parent,'up']);if(n.prev)nb.push([n.prev,'seq']);if(n.next)nb.push([n.next,'seq']);n.kids.forEach(m=>nb.push([m,'']));n.links2.forEach(m=>nb.push([m,'cross']));
   if(nb.length){h+=`<div class="group"><h2>Edges · degree ${nb.length}</h2><div class="chips">${nb.map(([m,k])=>`<button class="chip ${k}" type="button" data-go="${m.id}" style="--c:var(${hueOf(m)})"><i></i>${esc(m.label)}</button>`).join('')}</div>`;
     const kinds=[nb.some(x=>x[1]==='up')&&'double: parent',nb.some(x=>x[1]==='seq')&&'dotted: before or after',nb.some(x=>!x[1])&&'solid: child',n.links2.length&&'dashed: cross edge'].filter(Boolean);
-    if(kinds.length>1)h+=`<p class="key">${kinds.join(' · ')}</p>`;h+=`</div>`}
+    if(kinds.length>1&&n.branch!==byId.earth)h+=`<p class="key">${kinds.join(' · ')}</p>`;h+=`</div>`}
   card.innerHTML=h;card.scrollTop=0;card.classList.toggle('tucked',tucked);
 }
 card.addEventListener('click',e=>{
@@ -568,8 +620,8 @@ const find=$('find'),q=$('q'),hits=$('hits');
 function openFind(on){find.hidden=!on;$('findBtn').hidden=on;if(on){q.value='';hits.hidden=true;q.focus()}}
 $('findBtn').onclick=()=>openFind(true);
 q.addEventListener('input',()=>{
-  const s=q.value.trim().toLowerCase();if(!s){hits.hidden=true;return}
-  const k=n=>(n.title?n.label+' '+n.title:n.label).toLowerCase(),m=nodes.filter(n=>n.depth&&k(n).includes(s)).sort((a,b)=>k(a).indexOf(s)-k(b).indexOf(s)||a.depth-b.depth).slice(0,7);
+  const clean=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(),s=clean(q.value.trim());if(!s){hits.hidden=true;return}
+  const k=n=>clean([n.label,n.title,n.meta,...chain(n).slice(1,-1).map(p=>p.label)].filter(Boolean).join(' ')),words=s.split(/\s+/),m=nodes.filter(n=>n.depth&&words.every(w=>k(n).includes(w))).sort((a,b)=>Number(!clean(a.label).includes(s))-Number(!clean(b.label).includes(s))||a.depth-b.depth).slice(0,7);
   hits.hidden=!m.length;hits.innerHTML=m.map(n=>`<li><button type="button" data-go="${n.id}">${esc(n.label)}<span>${esc(n.branch.label)}</span></button></li>`).join('');
 });
 const pick=b=>{listing(false);go(byId[b.dataset.go]);openFind(false)};
@@ -592,6 +644,7 @@ addEventListener('keydown',e=>{
 /* ---------- pointer ---------- */
 const ptrs=new Map();let down=null,moved=false,pinch=0;
 function hit(sx,sy){
+  if(tripView)return hitTrip(sx,sy);
   let best=null,bd=1e9;
   for(const n of nodes){if(n.a<.5)continue;const s=n.s,d=hypot(s[0]-sx,s[1]-sy);if(d<max(phone?26:18,n.r+6)){const sc=d-s[2]*.03;if(sc<bd){bd=sc;best=n}}}
   if(best)return best;
@@ -601,17 +654,20 @@ function hit(sx,sy){
 cv.addEventListener('pointerdown',e=>{
   cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.offsetX,y:e.offsetY});moved=false;idle=0;
   if(ptrs.size===2){const[a,b]=[...ptrs.values()];pinch=hypot(a.x-b.x,a.y-b.y);down=null;return}
-  down={x:e.offsetX,y:e.offsetY,lx:e.offsetX,ly:e.offsetY};cv.style.cursor='grabbing';
+  down={x:e.offsetX,y:e.offsetY,lx:e.offsetX,ly:e.offsetY,globe:focus===byId.earth&&hit(e.offsetX,e.offsetY)===focus};cv.style.cursor='grabbing';
 });
 cv.addEventListener('pointermove',e=>{
   const p=ptrs.get(e.pointerId);
   if(!p){hover=hit(e.offsetX,e.offsetY);cv.style.cursor=hover?'pointer':'grab';return}
   p.x=e.offsetX;p.y=e.offsetY;
-  if(ptrs.size===2){const[a,b]=[...ptrs.values()],d=hypot(a.x-b.x,a.y-b.y);if(pinch)cam.uz=max(.6,min(2.4,cam.uz*d/pinch));pinch=d;moved=true;return}
+  if(ptrs.size===2){const[a,b]=[...ptrs.values()],d=hypot(a.x-b.x,a.y-b.y);if(pinch)zoomView(d/pinch);pinch=d;moved=true;return}
   if(!down)return;
   if(hypot(e.offsetX-down.x,e.offsetY-down.y)>6){if(!moved)hint.classList.add('off');moved=true}
   if(!moved)return;
-  const dx=(e.offsetX-down.lx)*.0052,dy=(e.offsetY-down.ly)*.0052;down.lx=e.offsetX;down.ly=e.offsetY;
+  const px=e.offsetX-down.lx,py=e.offsetY-down.ly;down.lx=e.offsetX;down.ly=e.offsetY;
+  if(tripView){panTrip(px,py);return}
+  const dx=px*.0052,dy=py*.0052;
+  if(down.globe){globeYaw-=dx*1.5;spin=[0,0];aim=false;return}
   Rm=mul(axisAngle([0,1,0],dx),mul(axisAngle([1,0,0],-dy),Rm));spin=[dx,dy];aim=false;
 });
 function up(e){
@@ -620,9 +676,12 @@ function up(e){
 }
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('pointerleave',()=>{hover=null});
-cv.addEventListener('wheel',e=>{e.preventDefault();cam.uz=max(.6,min(2.4,cam.uz*Math.exp(-e.deltaY*.0015)));idle=0},{passive:false});
+cv.addEventListener('wheel',e=>{e.preventDefault();zoomView(Math.exp(-e.deltaY*.0015));idle=0},{passive:false});
 
 /* ---------- frame ---------- */
+function zoomView(factor){
+  if(tripView)zoomTrip(factor);else cam.uz=max(.6,min(2.4,cam.uz*factor));
+}
 function step(){
   t++;idle++;
   if(!down){
@@ -661,8 +720,9 @@ function step(){
       for(let i=0;i<3;i++){n.v[i]=(n.v[i]+(tg[i]-n.p[i])*n.kk)*.83;n.p[i]+=n.v[i]}
     }else for(let i=0;i<3;i++){n.v[i]=0;n.p[i]+=(tg[i]-n.p[i])*.16}
     n.s=proj(n.p);n.f=.55+.45*max(0,min(1,(n.s[2]+300)/600));
-    const ld=focus?n.depth-1:0,rt=!focus?25:n===focus?27:ld===1?14:ld===2?9.5:8;n.rr+=(rt-n.rr)*.15;
+    const ld=focus?n.depth-1:0,rt=n===byId.earth&&focus===n?65:!focus?25:n===focus?27:ld===1?14:ld===2?9.5:8;n.rr+=(rt-n.rr)*.15;
   }
+  if(focus===byId.earth&&!tripView)relaxPlaces();
 }
 const rgba=(hex,a)=>{const v=parseInt(hex.slice(1),16);return`rgba(${v>>16&255},${v>>8&255},${v&255},${max(0,min(1,a))})`};
 const mix=(hex,to,k,al)=>{const a=parseInt(hex.slice(1),16),b=parseInt(to.slice(1),16),c=i=>Math.round((a>>i&255)*(1-k)+(b>>i&255)*k);return`rgba(${c(16)},${c(8)},${c(0)},${max(0,min(1,al))})`};
@@ -689,6 +749,7 @@ function draw(){
     if(e>.45)bg=flood.to;if(p>=1){bgNow=flood.to;flood=null;document.body.style.background=bgNow}}
   const ink=lum(bg)<.4?'#f6f3ec':'#141414';
   if(ink!==inkCss){inkCss=ink;document.documentElement.style.setProperty('--ink',ink);document.documentElement.style.setProperty('--paper',bg)}
+  if(tripView){drawTripMap(now,ink);return}
   const onPath=new Set(active&&active!==root?chain(active).slice(1):[]);
   // the string the beads sit on
   const S=SHAPES[shape],hid=antic&&antic.A.hide?antic.A.hide(antic,t-antic.t0):null;
@@ -704,9 +765,11 @@ function draw(){
     for(const n of nodes){
       if(n.a>.5)for(const m of n.links2){if(n.id>m.id||m.a<.5)continue;if(!(n===active||m===active||n===hover||m===hover))continue;const c=proj(ctrl(n,m));if((c[2]>=0)!==front)continue;
         ctx.beginPath();ctx.moveTo(n.s[0],n.s[1]);ctx.quadraticCurveTo(c[0],c[1],m.s[0],m.s[1]);ctx.setLineDash([1,6]);ctx.lineCap='round';ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);ctx.lineCap='butt'}
-      if(n.prev&&n.a>.05&&n.prev.a>.05&&(((n.s[2]+n.prev.s[2])/2>=0)===front)){ctx.beginPath();ctx.moveTo(n.prev.s[0],n.prev.s[1]);ctx.lineTo(n.s[0],n.s[1]);ctx.setLineDash([2,5]);ctx.strokeStyle=rgba(ink,.6*min(n.a,n.prev.a));ctx.lineWidth=1.4;ctx.stroke();ctx.setLineDash([])}
-      if(n.depth<2||n.a<.03)continue;const a=n.parent.s,b=n.s;if(((a[2]+b[2])/2>=0)!==front)continue;
-      const trail=onPath.has(n),f=(n.f+n.parent.f)/2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);
+      if(n.branch!==byId.earth&&n.prev&&n.a>.05&&n.prev.a>.05&&(((n.s[2]+n.prev.s[2])/2>=0)===front)){ctx.beginPath();ctx.moveTo(n.prev.s[0],n.prev.s[1]);ctx.lineTo(n.s[0],n.s[1]);ctx.setLineDash([2,5]);ctx.strokeStyle=rgba(ink,.6*min(n.a,n.prev.a));ctx.lineWidth=1.4;ctx.stroke();ctx.setLineDash([])}
+      if(n.depth<2||n.a<.03)continue;const linkFrom=n.branch===byId.earth&&n.parent.seq&&n.prev&&n.prev.a>.2?n.prev:n.parent,a=linkFrom.s,b=n.s;if(((a[2]+b[2])/2>=0)!==front)continue;
+      if(n.parent===byId.earth)continue;
+      const trail=onPath.has(n),f=(n.f+n.parent.f)/2;ctx.beginPath();ctx.moveTo(a[0],a[1]);
+      if(n.branch===byId.earth){const dx=b[0]-a[0],dy=b[1]-a[1];ctx.quadraticCurveTo((a[0]+b[0])/2-dy*.10,(a[1]+b[1])/2+dx*.10,b[0],b[1])}else ctx.lineTo(b[0],b[1]);
       ctx.strokeStyle=trail?rgba(ink,n.a):rgba(ink,.3*n.a*f);ctx.lineWidth=trail?2.4:1;ctx.stroke();
       const L=lit.get(n);if(L&&now>L.t){const k=1-(now-L.t)/1100;if(k<=0)lit.delete(n);else{ctx.strokeStyle=rgba(ink,k);ctx.lineWidth=1+4*k;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}}}
   };
@@ -716,10 +779,14 @@ function draw(){
     if(n===active){ctx.beginPath();ctx.arc(x,y,r+6,0,6.2832);ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=4;ctx.stroke()}
     if(n.kids.length&&!n.open&&focus&&n!==focus){ctx.beginPath();ctx.arc(x,y,r+4.5,0,6.2832);ctx.strokeStyle=mix(fill,'#000000',.35,.7*al);ctx.lineWidth=1.3;ctx.stroke()}
     if(n.s1){ctx.beginPath();ctx.arc(x,y,r,0,6.2832);ctx.fillStyle=bg;ctx.fill();ctx.setLineDash([3,3]);ctx.strokeStyle=mix(fill,'#000000',.4,al);ctx.lineWidth=1.6;ctx.stroke();ctx.setLineDash([])}
+    else if(n.id==='earth')drawGlobe(x,y,r,al,now);
     else ball(x,y,r,fill,al);
   }};
   const order=nodes.filter(n=>n.a>.05&&n.depth).sort((a,b)=>a.s[2]-b.s[2]);
-  edges(false);dots(order.filter(n=>n.s[2]<0));edges(true);dots(order.filter(n=>n.s[2]>=0));
+  const isGlobe=n=>focus===byId.earth&&n===focus;
+  edges(false);dots(order.filter(n=>n.s[2]<0&&!isGlobe(n)));edges(true);dots(order.filter(n=>n.s[2]>=0&&!isGlobe(n)));
+  if(focus===byId.earth)dots([focus]);
+  if(focus===byId.earth)drawPlacePin();
   if(antic&&antic.A.draw)antic.A.draw(antic,t-antic.t0,ink);
   if(pulse){
     const p=min(1,(now-pulse.t0)/pulse.dur);let pts;
@@ -745,7 +812,7 @@ function draw(){
     let sw=0;if(sub){ctx.font=`500 12.5px ${FF}`;sw=ctx.measureText(sub).width}
     ctx.font=font;const text=n===focus&&n.title||n.label,tw=max(ctx.measureText(text).width,sw),dx=x-cx,dy=y-cy;
     const R_=['left',x+r+8,y-L2/2],L_=['right',x-r-8,y-L2/2],U_=['center',x,y-r-14-L2],D_=['center',x,y+r+14];
-    const opts=n===focus?[['center',x,y-r-17]]:abs(dx)<34?(dy>0?[D_,R_,L_,U_]:[U_,R_,L_,D_]):dx>0?[R_,D_,U_,L_]:[L_,D_,U_,R_];
+    const opts=n===focus?[['center',x,y-r-17]]:focus===byId.earth?[n.placeSide>0?R_:L_]:abs(dx)<34?(dy>0?[D_,R_,L_,U_]:[U_,R_,L_,D_]):dx>0?[R_,D_,U_,L_]:[L_,D_,U_,R_];
     const boxOf=o=>({x:(o[0]==='left'?o[1]:o[0]==='right'?o[1]-tw:o[1]-tw/2)-4,y:o[2]-11,w:tw+8,h:22+L2,n});
     const clash=b=>{if(b.x<2||b.x+b.w>W-2)return true;for(const o of labelRects)if(b.x<o.x+o.w&&b.x+b.w>o.x&&b.y<o.y+o.h&&b.y+b.h>o.y)return true;
       for(const m of order){if(m===n)continue;if(m.s[0]+m.r>b.x&&m.s[0]-m.r<b.x+b.w&&m.s[1]+m.r>b.y&&m.s[1]-m.r<b.y+b.h)return true}return false};
@@ -758,14 +825,19 @@ function draw(){
     both((s,yy)=>{ctx.fillStyle=rgba(ink,s===sub?la*.78:la);ctx.fillText(s,lx,yy)});
   }
 }
-let frames=0;
-function loop(){step();if(frames++%120===0)tokens();draw();requestAnimationFrame(loop)}
+let frames=0,lastFrame=null,frameDebt=0;
+function loop(now){
+  frameDebt+=lastFrame===null?1000/60:min(50,now-lastFrame);lastFrame=now;
+  while(frameDebt>=1000/60){step();frameDebt-=1000/60}
+  if(frames++%120===0)tokens();draw();requestAnimationFrame(loop);
+}
 
 tokens();resize();[cx,cy]=centerT();cam.z=fit();
 if(phone)hint.textContent='Drag to turn · Tap a ball';
-{const n=byId[location.hash.slice(1)];if(n)go(n)}
+function hashNode(){const id=location.hash.slice(1);return byId[id==='t2014-ca'?'t2016-ca':id]}
+{const n=hashNode();if(n)go(n)}
 addEventListener('resize',resize);
-addEventListener('hashchange',()=>{const n=byId[location.hash.slice(1)];if(n&&n!==active)go(n)});
+addEventListener('hashchange',()=>{const n=hashNode();if(n)go(n);else if(!location.hash)clear()});
 for(const f of ['400 40px Gloock','500 14px "Familjen Grotesk"','700 21px "Familjen Grotesk"','400 10px "Martian Mono"'])try{document.fonts.load(f)}catch(e){}
 try{document.fonts.load('400 40px Gloock').then(()=>fav(flood?flood.to:bgNow),()=>{})}catch(e){}
 requestAnimationFrame(loop);
